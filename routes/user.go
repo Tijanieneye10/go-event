@@ -51,6 +51,6 @@ func login(context *gin.Context) {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
-	context.JSON(http.StatusOK, gin.H{"message": "Login successfully"})
+	context.JSON(http.StatusOK, gin.H{"message": "Login successfully", "token": token})
 
 }

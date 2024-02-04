@@ -18,6 +18,15 @@ func homePage(context *gin.Context) {
 }
 
 func createEvent(context *gin.Context) {
+
+	//get token
+	token := context.Request.Header.Get("Authorization")
+
+	if token == "" {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "unauthorized user"})
+		return
+	}
+
 	var event models.Event
 	err := context.ShouldBindJSON(&event)
 
