@@ -23,32 +23,32 @@ func GenerateToken(email string, userId int) (string, error) {
 	return signedString, nil
 }
 
-func VerifyToken(token string) error {
+func VerifyToken(token string) (int64, error) {
 	parseToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 		if !ok {
 			return nil, errors.New("unexpected signing method error")
 		}
-		return secretKey, nil
+		return []byte(secretKey), nil
 	})
 	if err != nil {
-		return errors.New(err.Error())
+		return 0, errors.New(err.Error())
 	}
 
 	tokenIsValid := parseToken.Valid
 
 	if !tokenIsValid {
-		return errors.New("invalid token")
+		return 0, errors.New("invalid token")
 	}
 
 	claims, ok := parseToken.Claims.(jwt.MapClaims)
 
 	if !ok {
-		return errors.New("invalid tokens")
+		return 0, errors.New("invalid tokens")
 	}
 
 	//email := claims["email"].(string)
-	//userId := claims["userId"]
+	userId := int64(claims["userId"].(float64))
 
-	return nil
+	return userId, nil
 }
